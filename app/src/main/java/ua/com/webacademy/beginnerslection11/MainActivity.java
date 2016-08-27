@@ -1,11 +1,15 @@
 package ua.com.webacademy.beginnerslection11;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -36,21 +40,21 @@ public class MainActivity extends AppCompatActivity {
 
         switch (v.getId()) {
             case R.id.button:
-                 preferences = getPreferences(MODE_PRIVATE);
-               editor = preferences.edit();
+                preferences = getPreferences(MODE_PRIVATE);
+                editor = preferences.edit();
 
                 editor.putString("Test", "test");
 
                 editor.commit();
                 break;
             case R.id.button2:
-                 preferences = getPreferences(MODE_PRIVATE);
+                preferences = getPreferences(MODE_PRIVATE);
                 String text1 = preferences.getString("Test", "");
 
                 Toast.makeText(this, text1, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button3:
-                 preferences = getSharedPreferences("MyPref", MODE_PRIVATE);
+                preferences = getSharedPreferences("MyPref", MODE_PRIVATE);
                 editor = preferences.edit();
 
                 editor.putString("Test", "test2");
@@ -58,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.commit();
                 break;
             case R.id.button4:
-                 preferences = getSharedPreferences("MyPref", MODE_PRIVATE);
+                preferences = getSharedPreferences("MyPref", MODE_PRIVATE);
                 String text3 = preferences.getString("Test", "");
 
                 Toast.makeText(this, text3, Toast.LENGTH_SHORT).show();
@@ -81,26 +85,34 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, text9, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button10:
-                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                    File folder = Environment.getExternalStorageDirectory();
-                    folder = new File(folder.getAbsolutePath() + "/MyFolder");
+                if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                        File folder = Environment.getExternalStorageDirectory();
+                        folder = new File(folder.getAbsolutePath() + "/MyFolder");
 
-                    if (!folder.exists()) {
-                        folder.mkdirs();
+                        if (!folder.exists()) {
+                            folder.mkdirs();
+                        }
+
+                        saveExternalFile(folder, "MyFile2.txt", "File data");
                     }
-
-                    saveExternalFile(folder, "MyFile2.txt", "File data");
+                } else {
+                    Toast.makeText(this, "You don't have permission for this", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.button11:
-                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                    File folder = Environment.getExternalStorageDirectory();
-                    folder = new File(folder.getAbsolutePath() + "/MyFolder");
+                if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                        File folder = Environment.getExternalStorageDirectory();
+                        folder = new File(folder.getAbsolutePath() + "/MyFolder");
 
-                    if (folder.exists()) {
-                        String text11 = readExternalFile(folder, "MyFile2.txt");
-                        Toast.makeText(this, text11, Toast.LENGTH_SHORT).show();
+                        if (folder.exists()) {
+                            String text11 = readExternalFile(folder, "MyFile2.txt");
+                            Toast.makeText(this, text11, Toast.LENGTH_SHORT).show();
+                        }
                     }
+                } else {
+                    Toast.makeText(this, "You don't have permission for this", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.button12:
@@ -119,7 +131,27 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(this, student2.FirstName, Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.button14:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    String[] permissions = {
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    };
+
+                    requestPermissions(permissions, 0);
+                } else {
+                    Toast.makeText(this, "You can request permissions only in Android 6+", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
+    }
+
+    private boolean hasPermission(String permission) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
+        }
+
+        return true;
     }
 
     private void saveInternalFile(String fileName, String data) {
