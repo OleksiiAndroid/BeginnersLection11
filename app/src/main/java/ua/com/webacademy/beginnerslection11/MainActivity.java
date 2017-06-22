@@ -90,10 +90,6 @@ public class MainActivity extends AppCompatActivity {
                         File folder = Environment.getExternalStorageDirectory();
                         folder = new File(folder.getAbsolutePath() + "/MyFolder");
 
-                        if (!folder.exists()) {
-                            folder.mkdirs();
-                        }
-
                         saveExternalFile(folder, "MyFile2.txt", "File data");
                     }
                 } else {
@@ -170,10 +166,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             StringBuilder builder = new StringBuilder();
 
-            InputStream inputStream = openFileInput(fileName);
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-
-            BufferedReader reader = new BufferedReader(inputStreamReader);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(openFileInput(fileName)));
             String line;
 
             while ((line = reader.readLine()) != null) {
@@ -191,9 +184,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveExternalFile(File folder, String fileName, String data) {
-        File file = new File(folder, fileName);
-
         try {
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            File file = new File(folder, fileName);
+
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
 
             writer.write(data);
