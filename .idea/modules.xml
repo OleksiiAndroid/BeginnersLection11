@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BeginnersLection11.iml" filepath="$PROJECT_DIR$/BeginnersLection11.iml" />
-      <module fileurl="file://E:/Projects/WebAcademy/BeginnersLection11/BeginnersLection11.iml" filepath="E:/Projects/WebAcademy/BeginnersLection11/BeginnersLection11.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://E:/Projects/WebAcademy/BeginnersLection11/app/app.iml" filepath="E:/Projects/WebAcademy/BeginnersLection11/app/app.iml" />
     </modules>
   </component>
 </project>
